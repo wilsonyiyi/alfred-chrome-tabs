@@ -29,15 +29,16 @@ test('buildGroupItems exposes focus and modifier actions for every group', () =>
   assert.equal(JSON.parse(item.mods.cmd.arg).method, 'closeGroup');
 });
 
-test('cg root exposes create and recolor actions before matching groups', () => {
+test('c2 root always exposes matching groups before create and recolor actions', () => {
   const items = buildGroupCommandItems(groups, '');
 
-  assert.equal(items[0].autocomplete, 'new ');
-  assert.equal(items[1].autocomplete, 'color ');
-  assert.equal(items[2].title, '🔵 Research');
+  assert.equal(items[0].title, '🔵 Research');
+  assert.equal(items[1].autocomplete, 'new ');
+  assert.equal(items[2].autocomplete, 'color ');
+  assert.equal(items.every(item => item.uid === undefined), true);
 });
 
-test('cg new creates the current tab group with the selected color', () => {
+test('c2 new creates the current tab group with the selected color', () => {
   const colors = buildGroupCommandItems(groups, 'new ');
   assert.equal(colors.length, 9);
   assert.equal(colors.find(item => item.title === '🟢 Green').autocomplete, 'new green ');
@@ -49,7 +50,7 @@ test('cg new creates the current tab group with the selected color', () => {
   });
 });
 
-test('cg new keeps grey as the shortcut default when no color is supplied', () => {
+test('c2 new keeps grey as the shortcut default when no color is supplied', () => {
   const [create] = buildGroupCommandItems(groups, 'new Project docs');
 
   assert.deepEqual(JSON.parse(create.arg), {
@@ -58,7 +59,7 @@ test('cg new keeps grey as the shortcut default when no color is supplied', () =
   });
 });
 
-test('cg color selects a group and emits a setGroupColor action', () => {
+test('c2 color selects a group and emits a setGroupColor action', () => {
   const [group] = buildGroupCommandItems(groups, 'color Research');
   assert.equal(group.autocomplete, 'color @42 ');
   assert.equal(group.valid, false);

@@ -36,7 +36,6 @@ function matchesGroup(group, query) {
 
 function colorChoiceItems({autocompletePrefix, group}) {
   return GROUP_COLOR_OPTIONS.map(color => ({
-    uid: group ? `group-${group.id}-color-${color.name}` : `new-group-color-${color.name}`,
     title: `${color.symbol} ${color.label}`,
     subtitle: group
       ? (group.color === color.name ? 'Current color' : `Change “${groupTitle(group)}” to ${color.label}`)
@@ -63,7 +62,6 @@ function createGroupItems(query) {
 
   if (!hasNameAfterColor && matchingColors.length > 0) {
     return matchingColors.map(color => ({
-      uid: `new-group-color-${color.name}`,
       title: `${color.symbol} ${color.label}`,
       subtitle: 'Press Tab, then enter the new group name',
       autocomplete: `new ${color.name} `,
@@ -76,7 +74,7 @@ function createGroupItems(query) {
     if (!title) {
       return [{
         title: `Enter a name for the ${selectedColor.label.toLowerCase()} group`,
-        subtitle: `cg new ${selectedColor.name} <name>`,
+        subtitle: `c2 new ${selectedColor.name} <name>`,
         valid: false,
       }];
     }
@@ -103,7 +101,7 @@ function recolorGroupItems(groups, query) {
     const group = groups.find(candidate => candidate.id === groupId);
     return group ? colorChoiceItems({group}) : [{
       title: 'Chrome tab group no longer exists',
-      subtitle: 'Return to cg color and choose another group.',
+      subtitle: 'Return to c2 color and choose another group.',
       valid: false,
     }];
   }
@@ -112,13 +110,12 @@ function recolorGroupItems(groups, query) {
   if (matchedGroups.length === 0) {
     return [{
       title: groups.length === 0 ? 'No Chrome tab groups found' : 'No matching Chrome tab groups',
-      subtitle: 'Create one with cg new.',
+      subtitle: 'Create one with c2 new.',
       valid: false,
     }];
   }
 
   return matchedGroups.map(group => ({
-    uid: `choose-color-group-${group.id}`,
     title: `${groupSymbol(group)} ${groupTitle(group)}`,
     subtitle: `${COLOR_BY_NAME.get(group.color)?.label ?? 'Grey'} · Press Tab to choose a new color`,
     autocomplete: `color @${group.id} `,
@@ -133,7 +130,6 @@ export function buildGroupItems(groups) {
     const state = group.collapsed ? 'Collapsed' : 'Expanded';
 
     return {
-      uid: `group-${group.id}`,
       title: `${groupSymbol(group)} ${title}`,
       subtitle: `${group.tabCount} tabs · ${state} · Window ${group.windowId}`,
       match: `${title} ${group.color} ${tabTitles.join(' ')}`,
@@ -170,14 +166,12 @@ export function buildGroupCommandItems(groups, input = '') {
   }
 
   const rootActions = [{
-    uid: 'group-command-new',
     title: 'Create a new tab group…',
     subtitle: 'Press Tab to choose a color and enter a name',
     autocomplete: 'new ',
     valid: false,
     match: 'new create 新建 创建',
   }, {
-    uid: 'group-command-color',
     title: 'Change a tab group color…',
     subtitle: 'Press Tab to choose a group',
     autocomplete: 'color ',
@@ -189,12 +183,14 @@ export function buildGroupCommandItems(groups, input = '') {
     !normalizedQuery || `${item.title} ${item.match}`.toLowerCase().includes(normalizedQuery)
   ));
   const matchedGroups = groups.filter(group => matchesGroup(group, normalizedQuery));
-  const items = [...actions, ...buildGroupItems(matchedGroups)];
+  // Group results are the primary content. Keep commands below them and omit
+  // item UIDs so Alfred Knowledge cannot reorder commands ahead of groups.
+  const items = [...buildGroupItems(matchedGroups), ...actions];
 
   if (items.length === 0) {
     return [{
       title: groups.length === 0 ? 'No Chrome tab groups found' : 'No matching Chrome tab groups',
-      subtitle: 'Use cg new to group the current Chrome tab.',
+      subtitle: 'Use c2 new to group the current Chrome tab.',
       valid: false,
     }];
   }

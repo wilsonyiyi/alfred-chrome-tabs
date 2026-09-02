@@ -65,7 +65,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>ct</string>
+				<string>c1</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -137,7 +137,7 @@
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>cg</string>
+				<string>c2</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -195,7 +195,7 @@
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>Use ct for Chrome tabs and cg for Chrome tab groups. In cg, use new to create a colored group and color to recolor an existing group.</string>
+	<string>Use c1 for Chrome tabs and c2 for Chrome tab groups. In c2, use new to create a colored group and color to recolor an existing group.</string>
 	<key>uidata</key>
 	<dict>
 		<key>1B3C0780-4C03-47CF-8C08-A47D95EA26B6</key>

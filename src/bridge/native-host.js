@@ -20,6 +20,7 @@ const socketPath = bridgeSocketPath();
 const pending = new Map();
 const decoder = new NativeMessageDecoder();
 let extensionReady = false;
+let ownedSocketIdentity;
 
 function writeNative(message) {
   process.stdout.write(encodeNativeMessage(message));
@@ -131,13 +132,28 @@ const server = net.createServer({allowHalfOpen: true}, socket => {
 });
 
 server.listen(socketPath, async () => {
+  const stats = fsSync.lstatSync(socketPath);
+  ownedSocketIdentity = {device: stats.dev, inode: stats.ino};
   await fs.chmod(socketPath, 0o600);
 });
 
 function cleanup() {
-  server.close();
   try {
-    fsSync.unlinkSync(socketPath);
+    const stats = fsSync.lstatSync(socketPath);
+    if (
+      ownedSocketIdentity
+      && stats.dev === ownedSocketIdentity.device
+      && stats.ino === ownedSocketIdentity.inode
+    ) {
+      server.close();
+      try {
+        fsSync.unlinkSync(socketPath);
+      } catch (error) {
+        if (error.code !== 'ENOENT') {
+          throw error;
+        }
+      }
+    }
   } catch (error) {
     if (error.code !== 'ENOENT') {
       process.stderr.write(`Failed to remove bridge socket: ${error.message}\n`);

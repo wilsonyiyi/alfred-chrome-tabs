@@ -25,6 +25,29 @@ async function waitForSocket(socketPath) {
   throw new Error(`Native host did not create ${socketPath}`);
 }
 
+async function waitForSocketReplacement(socketPath, previousInode) {
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    try {
+      const stats = await fs.lstat(socketPath);
+      if (stats.ino !== previousInode) {
+        return;
+      }
+    } catch {}
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+  throw new Error(`Native host did not replace ${socketPath}`);
+}
+
+async function waitForCondition(condition, message) {
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    if (condition()) {
+      return;
+    }
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+  throw new Error(message);
+}
+
 test('native host forwards a Unix socket request through Chrome native messaging', async t => {
   const temporaryHome = await fs.mkdtemp('/tmp/alfred-ct-');
   const socketPath = bridgeSocketPath(temporaryHome);
@@ -73,4 +96,55 @@ test('native host forwards a Unix socket request through Chrome native messaging
   assert.equal(hostReady, true);
   assert.deepEqual(result, {ready: true, echoedMethod: 'ping'});
   assert.equal(stderr, '');
+});
+
+test('an exiting native host does not remove a replacement host socket', async t => {
+  const temporaryHome = await fs.mkdtemp('/tmp/alfred-ct-reconnect-');
+  const socketPath = bridgeSocketPath(temporaryHome);
+  const hostPath = path.join(projectRoot, 'src', 'bridge', 'native-host.js');
+  const spawnHost = () => spawn(process.execPath, [hostPath, EXTENSION_ORIGIN], {
+    env: {...process.env, ALFRED_CHROME_TABS_HOME: temporaryHome},
+    stdio: ['pipe', 'pipe', 'pipe'],
+  });
+  const firstHost = spawnHost();
+  let secondHost;
+
+  t.after(async () => {
+    for (const host of [firstHost, secondHost]) {
+      if (host?.exitCode === null) {
+        host.kill('SIGTERM');
+        await once(host, 'exit');
+      }
+    }
+    await fs.rm(temporaryHome, {recursive: true, force: true});
+  });
+
+  await waitForSocket(socketPath);
+  const firstSocket = await fs.lstat(socketPath);
+  secondHost = spawnHost();
+  await waitForSocketReplacement(socketPath, firstSocket.ino);
+
+  const decoder = new NativeMessageDecoder();
+  let secondHostReady = false;
+  secondHost.stdout.on('data', chunk => {
+    for (const request of decoder.push(chunk)) {
+      if (request.type === 'hostReady') {
+        secondHostReady = true;
+        continue;
+      }
+      secondHost.stdin.write(encodeNativeMessage({
+        id: request.id,
+        result: {ready: true},
+      }));
+    }
+  });
+  secondHost.stdin.write(encodeNativeMessage({type: 'ready'}));
+  await waitForCondition(() => secondHostReady, 'Replacement native host did not become ready');
+
+  firstHost.stdin.end();
+  await once(firstHost, 'exit');
+  await fs.access(socketPath);
+
+  const result = await requestBridge('ping', {}, {socketPath, timeoutMs: 1000});
+  assert.deepEqual(result, {ready: true});
 });

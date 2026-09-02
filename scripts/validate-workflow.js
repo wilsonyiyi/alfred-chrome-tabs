@@ -17,6 +17,7 @@ const GROUP_ACTION_UID = '1028D1F9-AD5E-4B7E-984A-9F2978D8F101';
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const extensionManifest = JSON.parse(fs.readFileSync('extension/manifest.json', 'utf8'));
 const serviceWorker = fs.readFileSync('extension/service-worker.js', 'utf8');
+const nativeBridge = fs.readFileSync('extension/native-bridge.js', 'utf8');
 const popupHtml = fs.readFileSync('extension/popup.html', 'utf8');
 const nativeHostInstaller = fs.readFileSync('scripts/install-native-host.js', 'utf8');
 const workflow = plist.parse(fs.readFileSync('info.plist', 'utf8'));
@@ -42,11 +43,11 @@ if (
 
 if (
   scriptFilter?.type !== 'alfred.workflow.input.scriptfilter'
-  || scriptFilter.config.keyword !== 'ct'
+  || scriptFilter.config.keyword !== 'c1'
   || scriptFilter.config.alfredfiltersresults !== true
   || scriptFilter.config.script !== './node_modules/.bin/run-node index.js "$1"'
 ) {
-  throw new Error('The ct Script Filter is missing or incorrectly configured');
+  throw new Error('The c1 Script Filter is missing or incorrectly configured');
 }
 
 if (
@@ -58,19 +59,19 @@ if (
 }
 
 if (
-  groupFilter?.config.keyword !== 'cg'
+  groupFilter?.config.keyword !== 'c2'
   || groupFilter.config.alfredfiltersresults !== false
   || groupFilter.config.script !== './node_modules/.bin/run-node src/list-groups.js "$1"'
   || !connectsToGroupAction(GROUP_FILTER_UID)
 ) {
-  throw new Error('The cg Tab Groups filter is missing or disconnected');
+  throw new Error('The c2 Tab Groups filter is missing or disconnected');
 }
 
 if (
   groupAction?.config.script !== './node_modules/.bin/run-node src/group-action.js "$1"'
   || workflow.objects?.some(object => ['tg', 'tgnew'].includes(object.config?.keyword))
 ) {
-  throw new Error('The unified cg actions or retired tg keywords are incorrectly configured');
+  throw new Error('The unified c2 actions or retired tg keywords are incorrectly configured');
 }
 
 if (
@@ -78,6 +79,8 @@ if (
   || extensionManifest.version !== packageJson.version
   || extensionManifest.background?.service_worker !== 'service-worker.js'
   || extensionManifest.action?.default_popup !== 'popup.html'
+  || Number(extensionManifest.minimum_chrome_version) < 120
+  || !extensionManifest.permissions?.includes('alarms')
   || !extensionManifest.permissions?.includes('nativeMessaging')
   || !extensionManifest.permissions?.includes('tabGroups')
   || !extensionManifest.permissions?.includes('tabs')
@@ -98,6 +101,8 @@ if (
 
 if (
   !serviceWorker.includes(`const NATIVE_HOST_NAME = '${NATIVE_HOST_NAME}'`)
+  || !nativeBridge.includes('chromeApi.alarms.onAlarm.addListener(handleAlarm)')
+  || !nativeBridge.includes('port.onDisconnect.addListener')
   || !nativeHostInstaller.includes('allowed_origins: [EXTENSION_ORIGIN]')
   || EXTENSION_ORIGIN !== `chrome-extension://${EXTENSION_ID}/`
 ) {

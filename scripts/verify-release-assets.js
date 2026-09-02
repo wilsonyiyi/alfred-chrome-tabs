@@ -49,6 +49,7 @@ requireEntries(CHROME_EXTENSION_ASSET, [
   'README.md',
   'extension/manifest.json',
   'extension/icons/icon-128.png',
+  'extension/native-bridge.js',
   'extension/popup.html',
   'install-native-host.command',
   'scripts/install-native-host.js',
