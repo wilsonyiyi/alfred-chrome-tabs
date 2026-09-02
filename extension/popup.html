@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chrome Tabs Bridge</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="popup-shell">
+      <header class="brand-row">
+        <div class="brand">
+          <img class="brand-mark" src="icons/icon-48.png" width="40" height="40" alt="">
+          <div>
+            <h1>Chrome Tabs</h1>
+            <p>Alfred bridge</p>
+          </div>
+        </div>
+        <span class="version" id="version">v—</span>
+      </header>
+
+      <section class="status-card" id="status-card" data-tone="progress" role="status" aria-live="polite" aria-atomic="true">
+        <div class="status-heading">
+          <span class="status-dot" aria-hidden="true"></span>
+          <strong id="status-label">Connecting…</strong>
+        </div>
+        <p id="status-detail">Connecting to the native messaging host…</p>
+        <button id="retry" type="button" hidden>Retry connection</button>
+      </section>
+
+      <footer>
+        <span>Tab Groups bridge</span>
+        <span class="manifest">Manifest V3</span>
+      </footer>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

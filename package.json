@@ -1,0 +1,49 @@
+{
+  "name": "alfred-chrome-tabs",
+  "version": "0.1.0",
+  "description": "Search and manage Chrome tabs and tab groups from Alfred.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "bridge:doctor": "node scripts/bridge-doctor.js",
+    "bridge:install": "node scripts/install-native-host.js",
+    "build:release": "npm run check && node scripts/build-release.js",
+    "dev": "npm run validate && alfred-workflow-switch dev && node scripts/reload-workflow.js development",
+    "prod": "alfred-workflow-switch prod && node scripts/reload-workflow.js production",
+    "mode": "alfred-workflow-switch status",
+    "package:release": "npm run check && node scripts/package-release.js && node scripts/verify-release-assets.js",
+    "doctor": "alfred-workflow-switch doctor",
+    "tabgroup": "node scripts/tabgroup.js",
+    "test": "node --test",
+    "validate": "node scripts/validate-workflow.js",
+    "check": "npm test && npm run validate"
+  },
+  "alfredWorkflowSwitch": {
+    "releaseBundleId": "com.wilsonyiyi.alfred-chrome-tabs",
+    "developmentBundleId": "com.wilsonyiyi.alfred-chrome-tabs.dev"
+  },
+  "alfy": {
+    "updateNotification": false
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wilsonyiyi/alfred-chrome-tabs.git"
+  },
+  "homepage": "https://github.com/wilsonyiyi/alfred-chrome-tabs",
+  "author": "Wilsonyiyi",
+  "license": "MIT",
+  "dependencies": {
+    "alfy": "^3.1.0"
+  },
+  "devDependencies": {
+    "alfred-workflow-switch": "^0.1.0",
+    "archiver": "^8.0.0",
+    "plist": "^3.1.1"
+  },
+  "overrides": {
+    "cross-spawn": "^7.0.6",
+    "plist": "^3.1.1"
+  }
+}

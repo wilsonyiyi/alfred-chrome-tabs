@@ -1,0 +1,45 @@
+:root {
+  color-scheme: light dark;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --background: #ffffff;
+  --surface: #f8fafc;
+  --border: #e2e8f0;
+  --text: #172033;
+  --muted: #64748b;
+  --button: #2563eb;
+  --button-hover: #1d4ed8;
+}
+
+* { box-sizing: border-box; }
+body { width: 360px; margin: 0; background: var(--background); color: var(--text); }
+.popup-shell { padding: 20px; }
+.brand-row, .brand, .status-heading, footer { display: flex; align-items: center; }
+.brand-row { justify-content: space-between; gap: 16px; }
+.brand { gap: 12px; min-width: 0; }
+.brand-mark { width: 40px; height: 40px; flex: 0 0 auto; }
+h1, .brand p, .status-card p { margin: 0; }
+h1 { font-size: 19px; line-height: 24px; letter-spacing: -0.01em; }
+.brand p, .version, .status-card p, footer { color: var(--muted); }
+.brand p { margin-top: 1px; font-size: 12px; line-height: 16px; }
+.version { font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.status-card { margin-top: 20px; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+.status-heading { gap: 10px; font-size: 16px; line-height: 22px; }
+.status-dot { width: 10px; height: 10px; border-radius: 50%; background: #3b82f6; box-shadow: 0 0 0 4px rgb(59 130 246 / 12%); }
+.status-card[data-tone="success"] .status-dot { background: #16a34a; box-shadow: 0 0 0 4px rgb(22 163 74 / 12%); }
+.status-card[data-tone="warning"] .status-dot { background: #f59e0b; box-shadow: 0 0 0 4px rgb(245 158 11 / 14%); }
+.status-card[data-tone="danger"] .status-dot { background: #dc2626; box-shadow: 0 0 0 4px rgb(220 38 38 / 12%); }
+.status-card p { margin-top: 8px; font-size: 13px; line-height: 19px; overflow-wrap: anywhere; }
+button { min-height: 36px; margin-top: 14px; padding: 7px 13px; border: 0; border-radius: 9px; background: var(--button); color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background-color 160ms ease, opacity 160ms ease; }
+button:hover { background: var(--button-hover); }
+button:focus-visible { outline: 3px solid rgb(37 99 235 / 28%); outline-offset: 2px; }
+button:disabled { cursor: progress; opacity: 0.6; }
+footer { justify-content: space-between; margin-top: 14px; padding: 0 2px; font-size: 11px; line-height: 16px; }
+.manifest { font-variant-numeric: tabular-nums; }
+
+@media (prefers-color-scheme: dark) {
+  :root { --background: #111827; --surface: #182234; --border: #2c3a50; --text: #f8fafc; --muted: #a8b3c4; --button: #3b82f6; --button-hover: #60a5fa; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button { transition: none; }
+}

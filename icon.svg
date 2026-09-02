@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" color="#171717" role="img" aria-labelledby="title desc">
+  <title id="title">Chrome Tabs — Tab Lens</title>
+  <desc id="desc">A browser tab outline joined with a search lens, drawn as a graphite monoline with subtle Chrome color markers on a transparent background.</desc>
+
+  <g transform="translate(16 16) scale(1.15) translate(-16 -16)" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.75 12.5v-1.15a2.6 2.6 0 0 1 2.6-2.6h4.15c.72 0 1.39.33 1.83.9l1.22 1.6h4.1a2.6 2.6 0 0 1 2.6 2.6v6.4a3 3 0 0 1-3 3h-.95" opacity=".52"/>
+    <g aria-hidden="true">
+      <path d="M10.35 8.75h1.65" stroke="#EA4335"/>
+      <path d="M13.2 8.75h1.3" stroke="#FBBC04"/>
+      <path d="m16.35 9.68 1.02 1.34" stroke="#34A853"/>
+      <path d="M19.2 11.25h1.65" stroke="#4285F4"/>
+    </g>
+    <circle cx="13.25" cy="17.25" r="4.5"/>
+    <path d="m16.55 20.55 4.7 4.7"/>
+  </g>
+</svg>
