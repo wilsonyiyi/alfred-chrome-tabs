@@ -6,6 +6,14 @@ Search and manage Google Chrome tabs, tab groups, and history from Alfred.
 
 ## Usage
 
+### Search tabs, groups, and history together
+
+Type `c0` to list open Chrome tabs and tab groups. Continue typing to filter all three sources; matching history appears after you enter a query. Results are labeled `Tab`, `Group`, or `History` in the subtitle. Prefixes `t:`, `g:`, and `h:` (or `tab:`, `group:`, `history:`) keep results in one type.
+
+Press Return to focus a tab or group, or to reopen a history page. Group modifier keys from `c2` still apply.
+
+`c1`, `c2`, and `c3` remain available when you want a single type.
+
 ### Search Chrome tabs
 
 Type `c1` to list every open Chrome tab, then continue typing to filter by title or URL. Press Return to focus the selected tab.
@@ -24,6 +32,10 @@ Open the Chrome extension popup and enable **History search** once, then type `c
 
 | Command | Action |
 | --- | --- |
+| `c0` | Search open tabs, tab groups, and history together |
+| `c0 t:<query>` | Limit unified search to open tabs |
+| `c0 g:<query>` | Limit unified search to tab groups |
+| `c0 h:<query>` | Limit unified search to history |
 | `c1` | Search and focus open Chrome tabs |
 | `c2` | Search and focus Chrome tab groups |
 | `c2 new` | Choose a color, then create a group from the current tab |
@@ -40,6 +52,15 @@ Group result modifiers:
 | `⇧↩` | Add the current Chrome tab |
 | `⌃↩` | Ungroup all tabs without closing them |
 | `⌘↩` | Close every tab in the group |
+| `⌘⌥↩` | Save the group so it can be reopened later |
+
+### Save and reopen a tab group
+
+Chrome exposes no extension API for its own saved tab groups, so this workflow keeps its own list. Press `⌘⌥↩` on any group to save its title, color, and tab URLs. Saved groups then appear in `c2` and `c0` tagged `Saved`, below the groups that are currently open.
+
+Return on a saved group reopens its tabs and regroups them; `⌘↩` forgets the saved entry. Saving the same title and color again updates that one entry instead of creating a duplicate.
+
+Saving is always an explicit action. The workflow never infers that a group was closed by comparing reads, so a rename or a recolor cannot leave a stale duplicate behind.
 
 ### Check the Bridge
 
@@ -65,16 +86,18 @@ Keep the unpacked extension directory in place because Chrome loads it from that
 
 ## How it works
 
+`c0` uses the Chrome Extension Bridge for a single round trip: the extension returns open tabs, tab groups, and (when you typed a query) history. If the bridge is unavailable, `c0` falls back to the JXA tab list.
+
 `c1` uses a fast JXA path: it reads every Chrome tab in a single batch and lets Alfred filter the in-memory results. It does not require the Chrome Extension Bridge.
 
 Tab Group and History features use a separate bridge because Chrome's Apple Events interface does not expose the required APIs:
 
 ```text
-Alfred c2 / c3 command
+Alfred c0 / c2 / c3 command
   -> local Unix socket
   -> Chrome Native Messaging host
   -> bundled Manifest V3 extension
-  -> chrome.tabGroups / chrome.history / chrome.tabs APIs
+  -> chrome.tabs / chrome.tabGroups / chrome.history APIs
 ```
 
 The open Native Messaging port keeps the Manifest V3 service worker active during normal operation. If the host exits, the extension retries immediately and a Chrome Alarm watchdog continues recovery even after the service worker becomes dormant. Opening the popup also verifies that a connection exists; manual retry remains available for persistent installation errors.
@@ -151,6 +174,10 @@ npm run tabgroup -- remove-current
 npm run tabgroup -- move 123 456 -1
 npm run tabgroup -- ungroup 123
 npm run tabgroup -- close 123
+npm run tabgroup -- save 123
+npm run tabgroup -- saved
+npm run tabgroup -- reopen <saved-group-id>
+npm run tabgroup -- forget <saved-group-id>
 ```
 
 ## License
