@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Chrome Tabs Bridge",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Bridge Chrome tab group and history APIs to the Chrome Tabs Alfred workflow.",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr0MUZTxJEmxEIq4XFuS4n7XwargqFrdKcF/uqVzkTCXx0+7v2mkGmbSRpT+vC8FiFDOUpCPwLam2mX41qAPHarI764Kg5+TVwwXlYrqJo468rT6xEnqMT6978qyE9JpYB3468Y9qTE0ZZK8ZiuBF+RJhts7nogAbfAL8voDA9YBTskQrbdW1iCnbonQumoeP5pQQVk0omxzeJ0rRbKb6tqkeznR66qi00SBt3bEmxnBAbz+Lusiv3PPaPxphEpwx8WREP2wIeyUVswZKuTo4lzBlu3Sp7pcvL9WHWvn/qGO0O3GhETgJOhv5uKS1fjbkAd+gTqUaVJm1tVRNx+e7TwIDAQAB",
   "minimum_chrome_version": "120",
