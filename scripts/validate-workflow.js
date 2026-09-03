@@ -112,7 +112,8 @@ if (
   || !popupHtml.includes('aria-live="polite"')
   || !popupHtml.includes('id="version"')
   || !popupHtml.includes('id="history-permission"')
-  || !popupHtml.includes('https://github.com/wilsonyiyi/alfred-chrome-tabs')
+  || !popupHtml.includes('href="https://github.com/wilsonyiyi/alfred-chrome-tabs#chrome-tabs"')
+  || !popupHtml.includes('>Documentation</a>')
   || popupHtml.includes('Manifest V3')
   || !popupHtml.includes('src="icons/icon-48.png"')
   || extensionManifest.icons?.['128'] !== 'icons/icon-128.png'

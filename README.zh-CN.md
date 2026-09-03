@@ -44,9 +44,9 @@
 ### 查看 Bridge 状态
 
 点击 Chrome 工具栏中的扩展图标，可以查看版本和 Native Messaging Bridge 的实时连接状态。
-Popup 还可以按需开启 History Search 权限，并提供仓库链接。
+Popup 还可以按需开启 History Search 权限，并打开项目文档。
 
-![Chrome Tabs Bridge 状态](docs/images/bridge-popup.svg)
+![Chrome Tabs Bridge 已连接且 History Search 已启用](docs/images/bridge-popup.svg)
 
 ## 安装
 
@@ -105,6 +105,10 @@ npm run package:release
 ```
 
 开发源码使用 Bundle ID `com.wilsonyiyi.alfred-chrome-tabs.dev`；正式发布包使用 `com.wilsonyiyi.alfred-chrome-tabs`。
+
+代码推送到 `main` 后，CI 会先完成测试与发布资产校验。semantic-release 随后根据 Conventional Commit 自动决定版本（`fix` → patch、`feat` → minor、breaking change → major），同步更新 `package.json`、`package-lock.json`、`info.plist` 与 Chrome 扩展 manifest，重新构建两个安装资源，创建 Git tag 和 GitHub Release，并把版本文件提交回 `main`。
+
+每个 GitHub Release 都包含 `Chrome-Tabs.alfredworkflow` 和 `Chrome-Tabs-Bridge.zip`，不再需要手工修改版本或推送 tag。
 
 ## 许可证
 

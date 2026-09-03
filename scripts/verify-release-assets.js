@@ -14,6 +14,7 @@ import {
 } from '../src/release-package.js';
 
 const artifactsDirectory = path.resolve('.release', 'artifacts');
+const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const expectedAssets = [ALFRED_WORKFLOW_ASSET, CHROME_EXTENSION_ASSET].sort();
 const actualAssets = fs.readdirSync(artifactsDirectory).sort();
 
@@ -67,6 +68,22 @@ const workflowPlist = execFileSync(
 );
 if (!workflowPlist.includes(PRODUCTION_BUNDLE_ID) || workflowPlist.includes(DEVELOPMENT_BUNDLE_ID)) {
   throw new Error('Alfred release asset does not contain the production bundle ID');
+}
+
+const workflowVersion = [...workflowPlist.matchAll(
+  /<key>version<\/key>\s*<string>([^<]*)<\/string>/gu,
+)].at(-1)?.[1];
+if (workflowVersion !== packageJson.version) {
+  throw new Error(`Alfred release asset version ${workflowVersion} does not match ${packageJson.version}`);
+}
+
+const extensionManifest = JSON.parse(execFileSync(
+  'unzip',
+  ['-p', path.join(artifactsDirectory, CHROME_EXTENSION_ASSET), 'extension/manifest.json'],
+  {encoding: 'utf8'},
+));
+if (extensionManifest.version !== packageJson.version) {
+  throw new Error(`Chrome extension asset version ${extensionManifest.version} does not match ${packageJson.version}`);
 }
 
 console.log(`Verified ${ALFRED_WORKFLOW_ASSET} and ${CHROME_EXTENSION_ASSET}.`);

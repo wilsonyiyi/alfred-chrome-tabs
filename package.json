@@ -14,10 +14,12 @@
     "prod": "alfred-workflow-switch prod && node scripts/reload-workflow.js production",
     "mode": "alfred-workflow-switch status",
     "package:release": "npm run check && node scripts/package-release.js && node scripts/verify-release-assets.js",
+    "release": "semantic-release",
     "doctor": "alfred-workflow-switch doctor",
     "tabgroup": "node scripts/tabgroup.js",
     "test": "node --test",
     "validate": "node scripts/validate-workflow.js",
+    "version:bump": "node scripts/bump-version.js",
     "check": "npm test && npm run validate"
   },
   "alfredWorkflowSwitch": {
@@ -38,9 +40,12 @@
     "alfy": "^3.1.0"
   },
   "devDependencies": {
+    "@semantic-release/exec": "^7.1.0",
+    "@semantic-release/git": "^11.0.1",
     "alfred-workflow-switch": "^0.2.0",
     "archiver": "^8.0.0",
-    "plist": "^3.1.1"
+    "plist": "^3.1.1",
+    "semantic-release": "^25.0.9"
   },
   "overrides": {
     "cross-spawn": "^7.0.6",

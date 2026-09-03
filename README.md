@@ -44,9 +44,9 @@ Group result modifiers:
 ### Check the Bridge
 
 The Chrome toolbar popup shows the extension version and live Native Messaging Bridge state.
-It also lets you grant the optional History Search permission and links to this repository.
+It also lets you grant the optional History Search permission and open the project documentation.
 
-![Chrome Tabs Bridge status](docs/images/bridge-popup.svg)
+![Chrome Tabs Bridge connected with History search enabled](docs/images/bridge-popup.svg)
 
 ## Install
 
@@ -131,7 +131,9 @@ npm run package:release
 
 The source `info.plist` is always the complete development workflow with bundle ID `com.wilsonyiyi.alfred-chrome-tabs.dev`. Release packaging creates a separate production copy with bundle ID `com.wilsonyiyi.alfred-chrome-tabs`.
 
-Pushing a version tag matching `package.json` creates a GitHub Release containing `Chrome-Tabs.alfredworkflow` and `Chrome-Tabs-Bridge.zip`.
+After CI passes on `main`, semantic-release analyzes Conventional Commits and automatically creates the next version (`fix` → patch, `feat` → minor, breaking change → major). It synchronizes `package.json`, `package-lock.json`, `info.plist`, and the Chrome extension manifest, rebuilds both assets, creates the Git tag and GitHub Release, then commits the synchronized versions back to `main`.
+
+Every GitHub Release contains `Chrome-Tabs.alfredworkflow` and `Chrome-Tabs-Bridge.zip`; no manual version edit or tag push is required.
 
 ## Native Bridge CLI
 
