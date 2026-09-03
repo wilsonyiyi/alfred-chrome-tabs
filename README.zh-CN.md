@@ -6,6 +6,14 @@
 
 ## 使用方法
 
+### 同时搜索标签页、标签组和历史
+
+输入 `c0` 列出已打开的标签页和标签组。继续输入关键词后，会同时匹配这三类来源，历史记录只在有关键词时出现。结果副标题用 `Tab`、`Group`、`History` 区分类型。前缀 `t:` / `g:` / `h:`（或 `tab:` / `group:` / `history:`）可以只搜一类。
+
+回车聚焦标签页或标签组，或打开历史页面。`c2` 的标签组组合键在 `c0` 里同样有效。
+
+需要固定只搜一类时，仍可使用 `c1`、`c2`、`c3`。
+
 ### 搜索 Chrome 标签页
 
 输入 `c1` 列出全部已打开的 Chrome 标签页，继续输入标题或网址即可过滤，按回车聚焦所选标签页。
@@ -24,6 +32,10 @@
 
 | 指令 | 功能 |
 | --- | --- |
+| `c0` | 同时搜索已打开的标签页、标签组和历史 |
+| `c0 t:<关键词>` | 统一搜索中只显示标签页 |
+| `c0 g:<关键词>` | 统一搜索中只显示标签组 |
+| `c0 h:<关键词>` | 统一搜索中只显示历史 |
 | `c1` | 搜索并聚焦已打开的 Chrome 标签页 |
 | `c2` | 搜索并聚焦 Chrome 标签组 |
 | `c2 new` | 选择颜色，并用当前标签页创建标签组 |
@@ -65,16 +77,18 @@ Popup 还可以按需开启 History Search 权限，并打开项目文档。
 
 ## 工作原理
 
+`c0` 通过 Chrome Extension Bridge 一次取回标签页、标签组，以及（有关键词时）历史记录。Bridge 不可用时，会回退到 JXA 只列出标签页。
+
 `c1` 使用轻量的 JXA 快速通道：一次性批量读取全部 Chrome 标签页，再交给 Alfred 在内存中完成过滤，因此不依赖 Chrome Extension Bridge。
 
 Chrome 的 Apple Events 接口没有开放所需 API，因此 `c2` 和 `c3` 通过独立 Bridge 管理标签组与浏览历史：
 
 ```text
-Alfred c2 / c3 指令
+Alfred c0 / c2 / c3 指令
   -> 本地 Unix Socket
   -> Chrome Native Messaging Host
   -> Manifest V3 扩展
-  -> chrome.tabGroups / chrome.history / chrome.tabs API
+  -> chrome.tabs / chrome.tabGroups / chrome.history API
 ```
 
 正常连接时，Native Messaging Port 会保持 Manifest V3 Service Worker 活跃。如果 Host 退出，扩展会立即重连；若连续失败，Chrome Alarm 看门狗会在 Service Worker 休眠后继续唤醒并恢复连接。打开 popup 时也会主动检查连接。

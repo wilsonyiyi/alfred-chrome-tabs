@@ -16,6 +16,8 @@ const GROUP_FILTER_UID = '5CF0B408-6BB4-4B0C-99A1-0B283EFF1CFB';
 const GROUP_ACTION_UID = '1028D1F9-AD5E-4B7E-984A-9F2978D8F101';
 const HISTORY_FILTER_UID = 'C6A5EC49-0E70-4005-B9FE-BE4BE3151A2D';
 const HISTORY_ACTION_UID = '60D78AE9-CEB9-4339-A65D-9E5826AEDA94';
+const SEARCH_FILTER_UID = '8F3A9C12-4D7E-4B1A-9E6C-2A5F8D0B7E31';
+const SEARCH_ACTION_UID = 'B2C4E6A8-1F3D-4A9B-8C5E-7D0F2A4B6C8E';
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const extensionManifest = JSON.parse(fs.readFileSync('extension/manifest.json', 'utf8'));
 const serviceWorker = fs.readFileSync('extension/service-worker.js', 'utf8');
@@ -33,11 +35,16 @@ const groupFilter = workflow.objects?.find(object => object.uid === GROUP_FILTER
 const groupAction = workflow.objects?.find(object => object.uid === GROUP_ACTION_UID);
 const historyFilter = workflow.objects?.find(object => object.uid === HISTORY_FILTER_UID);
 const historyAction = workflow.objects?.find(object => object.uid === HISTORY_ACTION_UID);
+const searchFilter = workflow.objects?.find(object => object.uid === SEARCH_FILTER_UID);
+const searchAction = workflow.objects?.find(object => object.uid === SEARCH_ACTION_UID);
 const connectsToGroupAction = uid => workflow.connections?.[uid]?.some(connection => (
   connection.destinationuid === GROUP_ACTION_UID
 ));
 const connectsToHistoryAction = workflow.connections?.[HISTORY_FILTER_UID]?.some(connection => (
   connection.destinationuid === HISTORY_ACTION_UID
+));
+const connectsToSearchAction = workflow.connections?.[SEARCH_FILTER_UID]?.some(connection => (
+  connection.destinationuid === SEARCH_ACTION_UID
 ));
 
 if (
@@ -93,6 +100,16 @@ if (
 }
 
 if (
+  searchFilter?.config.keyword !== 'c0'
+  || searchFilter.config.alfredfiltersresults !== false
+  || searchFilter.config.script !== './node_modules/.bin/run-node src/search.js "$1"'
+  || searchAction?.config.script !== './node_modules/.bin/run-node src/run-action.js "$1"'
+  || !connectsToSearchAction
+) {
+  throw new Error('The c0 unified search filter is missing or disconnected');
+}
+
+if (
   extensionManifest.manifest_version !== 3
   || extensionManifest.version !== packageJson.version
   || extensionManifest.background?.service_worker !== 'service-worker.js'
@@ -125,6 +142,7 @@ if (
 if (
   !serviceWorker.includes(`const NATIVE_HOST_NAME = '${NATIVE_HOST_NAME}'`)
   || !serviceWorker.includes('createHistoryHandlers(chrome)')
+  || !serviceWorker.includes('createSearchHandlers(chrome)')
   || !historyBridge.includes('chromeApi.history.search')
   || !historyBridge.includes('HISTORY_PERMISSION_REQUIRED')
   || !nativeBridge.includes('chromeApi.alarms.onAlarm.addListener(handleAlarm)')

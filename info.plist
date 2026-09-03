@@ -8,6 +8,8 @@
 	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
+		<key>1028D1F9-AD5E-4B7E-984A-9F2978D8F101</key>
+		<array/>
 		<key>1B3C0780-4C03-47CF-8C08-A47D95EA26B6</key>
 		<array>
 			<dict>
@@ -36,7 +38,22 @@
 				<false/>
 			</dict>
 		</array>
-		<key>1028D1F9-AD5E-4B7E-984A-9F2978D8F101</key>
+		<key>60D78AE9-CEB9-4339-A65D-9E5826AEDA94</key>
+		<array/>
+		<key>8F3A9C12-4D7E-4B1A-9E6C-2A5F8D0B7E31</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>B2C4E6A8-1F3D-4A9B-8C5E-7D0F2A4B6C8E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>B2C4E6A8-1F3D-4A9B-8C5E-7D0F2A4B6C8E</key>
 		<array/>
 		<key>C6A5EC49-0E70-4005-B9FE-BE4BE3151A2D</key>
 		<array>
@@ -51,8 +68,6 @@
 				<false/>
 			</dict>
 		</array>
-		<key>60D78AE9-CEB9-4339-A65D-9E5826AEDA94</key>
-		<array/>
 	</dict>
 	<key>createdby</key>
 	<string>Wilsonyiyi</string>
@@ -280,11 +295,90 @@
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>c0</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Searching Chrome tabs, groups, and history…</string>
+				<key>script</key>
+				<string>./node_modules/.bin/run-node src/search.js "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Search open tabs, tab groups, and history together</string>
+				<key>title</key>
+				<string>Search Chrome tabs, groups, and history</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>8F3A9C12-4D7E-4B1A-9E6C-2A5F8D0B7E31</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>./node_modules/.bin/run-node src/run-action.js "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>B2C4E6A8-1F3D-4A9B-8C5E-7D0F2A4B6C8E</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
-	<string>Use c1 for Chrome tabs, c2 for Chrome tab groups, and c3 for Chrome history. Enable History Search from the Chrome extension popup before using c3.</string>
+	<string>Use c0 to search Chrome tabs, tab groups, and history together. Use c1, c2, and c3 to stay in one type. Enable History Search from the Chrome extension popup before using history results.</string>
 	<key>uidata</key>
 	<dict>
+		<key>1028D1F9-AD5E-4B7E-984A-9F2978D8F101</key>
+		<dict>
+			<key>xpos</key>
+			<real>520</real>
+			<key>ypos</key>
+			<real>335</real>
+		</dict>
 		<key>1B3C0780-4C03-47CF-8C08-A47D95EA26B6</key>
 		<dict>
 			<key>xpos</key>
@@ -306,24 +400,31 @@
 			<key>ypos</key>
 			<real>250</real>
 		</dict>
-		<key>1028D1F9-AD5E-4B7E-984A-9F2978D8F101</key>
+		<key>60D78AE9-CEB9-4339-A65D-9E5826AEDA94</key>
 		<dict>
 			<key>xpos</key>
 			<real>520</real>
 			<key>ypos</key>
-			<real>335</real>
+			<real>420</real>
+		</dict>
+		<key>8F3A9C12-4D7E-4B1A-9E6C-2A5F8D0B7E31</key>
+		<dict>
+			<key>xpos</key>
+			<real>245</real>
+			<key>ypos</key>
+			<real>590</real>
+		</dict>
+		<key>B2C4E6A8-1F3D-4A9B-8C5E-7D0F2A4B6C8E</key>
+		<dict>
+			<key>xpos</key>
+			<real>520</real>
+			<key>ypos</key>
+			<real>590</real>
 		</dict>
 		<key>C6A5EC49-0E70-4005-B9FE-BE4BE3151A2D</key>
 		<dict>
 			<key>xpos</key>
 			<real>245</real>
-			<key>ypos</key>
-			<real>420</real>
-		</dict>
-		<key>60D78AE9-CEB9-4339-A65D-9E5826AEDA94</key>
-		<dict>
-			<key>xpos</key>
-			<real>520</real>
 			<key>ypos</key>
 			<real>420</real>
 		</dict>
