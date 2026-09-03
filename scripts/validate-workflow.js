@@ -117,6 +117,7 @@ if (
   || Number(extensionManifest.minimum_chrome_version) < 120
   || !extensionManifest.permissions?.includes('alarms')
   || !extensionManifest.permissions?.includes('nativeMessaging')
+  || !extensionManifest.permissions?.includes('storage')
   || !extensionManifest.permissions?.includes('tabGroups')
   || !extensionManifest.permissions?.includes('tabs')
   || !extensionManifest.optional_permissions?.includes('history')
@@ -142,6 +143,7 @@ if (
 if (
   !serviceWorker.includes(`const NATIVE_HOST_NAME = '${NATIVE_HOST_NAME}'`)
   || !serviceWorker.includes('createHistoryHandlers(chrome)')
+  || !serviceWorker.includes('createSavedGroupHandlers(chrome)')
   || !serviceWorker.includes('createSearchHandlers(chrome)')
   || !historyBridge.includes('chromeApi.history.search')
   || !historyBridge.includes('HISTORY_PERMISSION_REQUIRED')

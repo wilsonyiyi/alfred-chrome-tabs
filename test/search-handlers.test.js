@@ -72,6 +72,7 @@ test('searchAll returns tabs and groups without history when includeHistory is f
 
   assert.equal(result.historyStatus, 'skipped');
   assert.deepEqual(result.history, []);
+  assert.deepEqual(result.savedGroups, []);
   assert.equal(result.tabs[0].id, 11);
   assert.equal(result.tabs[0].groupTitle, 'Research');
   assert.equal(result.tabs[1].groupId, undefined);

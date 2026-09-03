@@ -45,6 +45,14 @@ const history = [{
   visitCount: 1,
 }];
 
+const savedGroups = [{
+  id: 'uuid-1',
+  title: 'Archived reading',
+  color: 'grey',
+  savedAt: 1,
+  tabs: [{title: 'Spec', url: 'https://spec.test/tabgroups'}],
+}];
+
 test('parseSearchQuery reads type prefixes and keeps unmatched text as the query', () => {
   assert.deepEqual(parseSearchQuery('github'), {scope: 'all', query: 'github'});
   assert.deepEqual(parseSearchQuery('t: github'), {scope: 'tabs', query: 'github'});
@@ -158,6 +166,38 @@ test('permission-required history still returns tabs and groups', () => {
   assert.equal(items[0].title, 'GitHub');
   assert.equal(items.at(-1).title, 'Enable Chrome History Search');
   assert.equal(items.at(-1).valid, false);
+});
+
+test('saved groups follow live groups and stay inside the group scope', () => {
+  const items = buildUnifiedSearchItems({
+    tabs,
+    groups,
+    savedGroups,
+    history,
+    historyStatus: 'ok',
+    scope: 'groups',
+    query: '',
+  });
+
+  assert.deepEqual(items.map(item => item.title), ['🔵 Research', '⚪ Archived reading']);
+  assert.equal(items[1].subtitle, 'Group · 1 tabs · Saved · Return reopens this group');
+  assert.deepEqual(JSON.parse(items[1].arg), {
+    method: 'openSavedGroup',
+    params: {savedGroupId: 'uuid-1'},
+  });
+});
+
+test('saved groups are searchable by their remembered tab URLs', () => {
+  const items = buildUnifiedSearchItems({
+    tabs: [],
+    groups: [],
+    savedGroups,
+    scope: 'all',
+    query: 'spec.test',
+  });
+
+  assert.equal(items.length, 1);
+  assert.equal(items[0].title, '⚪ Archived reading');
 });
 
 test('empty combined query does not show history', () => {

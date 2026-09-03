@@ -1,4 +1,4 @@
-import {buildGroupItems} from './group-items.js';
+import {buildGroupItems, buildSavedGroupItems, matchesSavedGroup} from './group-items.js';
 import {buildHistoryItems} from './history-items.js';
 
 const SCOPE_ALIASES = Object.freeze({
@@ -132,6 +132,15 @@ function buildUnifiedGroupItems(groups, query) {
   }));
 }
 
+function buildUnifiedSavedGroupItems(savedGroups, query) {
+  const matched = savedGroups.filter(group => matchesSavedGroup(group, query));
+
+  return buildSavedGroupItems(matched).map(item => ({
+    ...item,
+    subtitle: `Group · ${item.subtitle}`,
+  }));
+}
+
 function buildUnifiedHistoryItems(historyItems, {query, openUrls, dedupeOpenTabs, now}) {
   const filtered = historyItems.filter(item => {
     if (typeof item.url !== 'string' || !item.url) {
@@ -200,6 +209,7 @@ function emptyItem(scope, query) {
 export function buildUnifiedSearchItems({
   tabs = [],
   groups = [],
+  savedGroups = [],
   history = [],
   historyStatus = 'skipped',
   scope = 'all',
@@ -218,6 +228,7 @@ export function buildUnifiedSearchItems({
   }
   if (includesGroups(scope)) {
     items.push(...buildUnifiedGroupItems(groups, query));
+    items.push(...buildUnifiedSavedGroupItems(savedGroups, query));
   }
   if (includesHistory(scope) && historyStatus === 'ok') {
     items.push(...buildUnifiedHistoryItems(history, {

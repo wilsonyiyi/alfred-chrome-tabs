@@ -25,7 +25,11 @@ Commands:
   remove-current
   move <group-id> <window-id> [index]
   ungroup <group-id>
-  close <group-id>`;
+  close <group-id>
+  save <group-id>
+  saved
+  reopen <saved-group-id>
+  forget <saved-group-id>`;
 }
 
 const [command, ...arguments_] = process.argv.slice(2);
@@ -80,6 +84,19 @@ switch (command) {
   case 'close':
     method = 'closeGroup';
     params = {groupId: integer(arguments_[0], 'group-id')};
+    break;
+  case 'save':
+    method = 'saveGroup';
+    params = {groupId: integer(arguments_[0], 'group-id')};
+    break;
+  case 'saved': method = 'listSavedGroups'; break;
+  case 'reopen':
+    method = 'openSavedGroup';
+    params = {savedGroupId: arguments_[0]};
+    break;
+  case 'forget':
+    method = 'deleteSavedGroup';
+    params = {savedGroupId: arguments_[0]};
     break;
   default:
     console.error(usage());

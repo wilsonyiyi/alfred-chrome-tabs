@@ -52,6 +52,15 @@ Group result modifiers:
 | `⇧↩` | Add the current Chrome tab |
 | `⌃↩` | Ungroup all tabs without closing them |
 | `⌘↩` | Close every tab in the group |
+| `⌘⌥↩` | Save the group so it can be reopened later |
+
+### Save and reopen a tab group
+
+Chrome exposes no extension API for its own saved tab groups, so this workflow keeps its own list. Press `⌘⌥↩` on any group to save its title, color, and tab URLs. Saved groups then appear in `c2` and `c0` tagged `Saved`, below the groups that are currently open.
+
+Return on a saved group reopens its tabs and regroups them; `⌘↩` forgets the saved entry. Saving the same title and color again updates that one entry instead of creating a duplicate.
+
+Saving is always an explicit action. The workflow never infers that a group was closed by comparing reads, so a rename or a recolor cannot leave a stale duplicate behind.
 
 ### Check the Bridge
 
@@ -165,6 +174,10 @@ npm run tabgroup -- remove-current
 npm run tabgroup -- move 123 456 -1
 npm run tabgroup -- ungroup 123
 npm run tabgroup -- close 123
+npm run tabgroup -- save 123
+npm run tabgroup -- saved
+npm run tabgroup -- reopen <saved-group-id>
+npm run tabgroup -- forget <saved-group-id>
 ```
 
 ## License

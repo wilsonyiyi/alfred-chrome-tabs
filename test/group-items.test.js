@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {buildGroupCommandItems, buildGroupItems} from '../src/group-items.js';
+import {
+  buildGroupCommandItems,
+  buildGroupItems,
+  buildSavedGroupItems,
+} from '../src/group-items.js';
 
 const groups = [{
   id: 42,
@@ -27,6 +31,57 @@ test('buildGroupItems exposes focus and modifier actions for every group', () =>
   assert.equal(JSON.parse(item.mods.shift.arg).method, 'addCurrentTab');
   assert.equal(JSON.parse(item.mods.ctrl.arg).method, 'ungroupGroup');
   assert.equal(JSON.parse(item.mods.cmd.arg).method, 'closeGroup');
+  assert.deepEqual(JSON.parse(item.mods['cmd+alt'].arg), {
+    method: 'saveGroup',
+    params: {groupId: 42},
+  });
+});
+
+test('buildSavedGroupItems reopens by saved id and offers a delete modifier', () => {
+  const [item] = buildSavedGroupItems([{
+    id: 'uuid-1',
+    title: 'Research',
+    color: 'purple',
+    savedAt: 1,
+    tabs: [
+      {title: 'Chrome API', url: 'https://chrome.test/api'},
+      {title: 'Alfred docs', url: 'https://alfred.test/docs'},
+    ],
+  }]);
+
+  assert.equal(item.title, '🟣 Research');
+  assert.equal(item.subtitle, '2 tabs · Saved · Return reopens this group');
+  assert.match(item.match, /saved/u);
+  assert.match(item.match, /chrome\.test\/api/u);
+  assert.deepEqual(JSON.parse(item.arg), {
+    method: 'openSavedGroup',
+    params: {savedGroupId: 'uuid-1'},
+  });
+  assert.deepEqual(JSON.parse(item.mods.cmd.arg), {
+    method: 'deleteSavedGroup',
+    params: {savedGroupId: 'uuid-1'},
+  });
+});
+
+test('c2 lists saved groups after live groups and before the management commands', () => {
+  const items = buildGroupCommandItems(groups, '', {
+    savedGroups: [{id: 'uuid-1', title: 'Archived', color: 'grey', savedAt: 1, tabs: []}],
+  });
+
+  assert.equal(items[0].title, '🔵 Research');
+  assert.equal(items[1].title, '⚪ Archived');
+  assert.equal(items[2].autocomplete, 'new ');
+  assert.equal(items[3].autocomplete, 'color ');
+});
+
+test('c2 color only offers live groups so it never emits an undefined group id', () => {
+  const items = buildGroupCommandItems(groups, 'color Archived', {
+    savedGroups: [{id: 'uuid-1', title: 'Archived', color: 'grey', savedAt: 1, tabs: []}],
+  });
+
+  assert.equal(items.length, 1);
+  assert.equal(items[0].valid, false);
+  assert.equal(items[0].title, 'No matching Chrome tab groups');
 });
 
 test('c2 root always exposes matching groups before create and recolor actions', () => {

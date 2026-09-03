@@ -1,4 +1,5 @@
 import {createHistoryHandlers} from './history.js';
+import {createSavedGroupHandlers} from './saved-groups.js';
 import {createTabGroupHandlers} from './tab-groups.js';
 
 function requireInteger(value, name) {
@@ -25,13 +26,15 @@ function mapTab(tab, groupTitleById, noneGroupId) {
 export function createSearchHandlers(chromeApi, {now = Date.now} = {}) {
   const groupHandlers = createTabGroupHandlers(chromeApi);
   const historyHandlers = createHistoryHandlers(chromeApi, {now});
+  const savedGroupHandlers = createSavedGroupHandlers(chromeApi, {now});
   const noneGroupId = chromeApi.tabGroups?.TAB_GROUP_ID_NONE ?? -1;
 
   return {
     async searchAll({text = '', maxResults, includeHistory = false} = {}) {
-      const [rawTabs, groups] = await Promise.all([
+      const [rawTabs, groups, savedGroups] = await Promise.all([
         chromeApi.tabs.query({}),
         groupHandlers.listGroups(),
+        savedGroupHandlers.listSavedGroups(),
       ]);
       const groupTitleById = new Map(groups.map(group => [group.id, group.title ?? '']));
       const tabs = rawTabs
@@ -41,15 +44,15 @@ export function createSearchHandlers(chromeApi, {now = Date.now} = {}) {
         ));
 
       if (!includeHistory) {
-        return {tabs, groups, history: [], historyStatus: 'skipped'};
+        return {tabs, groups, savedGroups, history: [], historyStatus: 'skipped'};
       }
 
       try {
         const history = await historyHandlers.searchHistory({text, maxResults});
-        return {tabs, groups, history, historyStatus: 'ok'};
+        return {tabs, groups, savedGroups, history, historyStatus: 'ok'};
       } catch (error) {
         if (error.code === 'HISTORY_PERMISSION_REQUIRED') {
-          return {tabs, groups, history: [], historyStatus: 'permission-required'};
+          return {tabs, groups, savedGroups, history: [], historyStatus: 'permission-required'};
         }
         throw error;
       }

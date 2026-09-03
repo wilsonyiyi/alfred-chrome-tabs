@@ -29,8 +29,8 @@ function matchesGroup(group, query) {
   const searchable = [
     groupTitle(group),
     group.color,
-    ...group.tabs.map(tab => tab.title),
-  ].join(' ').toLowerCase();
+    ...group.tabs.flatMap(tab => [tab.title, tab.url]),
+  ].filter(Boolean).join(' ').toLowerCase();
   return terms.every(term => searchable.includes(term));
 }
 
@@ -126,13 +126,13 @@ function recolorGroupItems(groups, query) {
 export function buildGroupItems(groups) {
   return groups.map(group => {
     const title = groupTitle(group);
-    const tabTitles = group.tabs.map(tab => tab.title).filter(Boolean);
+    const searchable = group.tabs.flatMap(tab => [tab.title, tab.url]).filter(Boolean);
     const state = group.collapsed ? 'Collapsed' : 'Expanded';
 
     return {
       title: `${groupSymbol(group)} ${title}`,
       subtitle: `${group.tabCount} tabs · ${state} · Window ${group.windowId}`,
-      match: `${title} ${group.color} ${tabTitles.join(' ')}`,
+      match: `${title} ${group.color} ${searchable.join(' ')}`,
       arg: action('focusGroup', {groupId: group.id}),
       mods: {
         alt: {
@@ -151,12 +151,40 @@ export function buildGroupItems(groups) {
           arg: action('closeGroup', {groupId: group.id}),
           subtitle: '⌘: Close every tab in this group',
         },
+        'cmd+alt': {
+          arg: action('saveGroup', {groupId: group.id}),
+          subtitle: '⌘⌥: Save this group so it can be reopened later',
+        },
       },
     };
   });
 }
 
-export function buildGroupCommandItems(groups, input = '') {
+export function buildSavedGroupItems(savedGroups) {
+  return savedGroups.map(group => {
+    const title = groupTitle(group);
+    const searchable = (group.tabs ?? []).flatMap(tab => [tab.title, tab.url]).filter(Boolean);
+
+    return {
+      title: `${groupSymbol(group)} ${title}`,
+      subtitle: `${(group.tabs ?? []).length} tabs · Saved · Return reopens this group`,
+      match: `${title} ${group.color} saved ${searchable.join(' ')}`,
+      arg: action('openSavedGroup', {savedGroupId: group.id}),
+      mods: {
+        cmd: {
+          arg: action('deleteSavedGroup', {savedGroupId: group.id}),
+          subtitle: '⌘: Forget this saved group',
+        },
+      },
+    };
+  });
+}
+
+export function matchesSavedGroup(group, query) {
+  return matchesGroup({...group, tabs: group.tabs ?? []}, query);
+}
+
+export function buildGroupCommandItems(groups, input = '', {savedGroups = []} = {}) {
   const query = String(input ?? '').trimStart();
   if (/^new(?:\s|$)/iu.test(query)) {
     return createGroupItems(query);
@@ -183,9 +211,14 @@ export function buildGroupCommandItems(groups, input = '') {
     !normalizedQuery || `${item.title} ${item.match}`.toLowerCase().includes(normalizedQuery)
   ));
   const matchedGroups = groups.filter(group => matchesGroup(group, normalizedQuery));
+  const matchedSaved = savedGroups.filter(group => matchesSavedGroup(group, normalizedQuery));
   // Group results are the primary content. Keep commands below them and omit
   // item UIDs so Alfred Knowledge cannot reorder commands ahead of groups.
-  const items = [...buildGroupItems(matchedGroups), ...actions];
+  const items = [
+    ...buildGroupItems(matchedGroups),
+    ...buildSavedGroupItems(matchedSaved),
+    ...actions,
+  ];
 
   if (items.length === 0) {
     return [{
