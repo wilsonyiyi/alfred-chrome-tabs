@@ -19,18 +19,29 @@
         <span class="version" id="version">v—</span>
       </header>
 
-      <section class="status-card" id="status-card" data-tone="progress" role="status" aria-live="polite" aria-atomic="true">
-        <div class="status-heading">
-          <span class="status-dot" aria-hidden="true"></span>
-          <strong id="status-label">Connecting…</strong>
+      <section class="status-card" id="status-card" data-tone="progress">
+        <div class="bridge-status" role="status" aria-live="polite" aria-atomic="true">
+          <div class="status-heading">
+            <span class="status-dot" aria-hidden="true"></span>
+            <strong id="status-label">Connecting…</strong>
+          </div>
+          <p id="status-detail">Connecting to the native messaging host…</p>
+          <button class="retry-button" id="retry" type="button" hidden>Retry connection</button>
         </div>
-        <p id="status-detail">Connecting to the native messaging host…</p>
-        <button id="retry" type="button" hidden>Retry connection</button>
+
+        <div class="divider" aria-hidden="true"></div>
+
+        <div class="feature-row">
+          <div class="feature-copy">
+            <strong>History search</strong>
+            <span id="history-detail">Checking Chrome permission</span>
+          </div>
+          <button class="permission-button" id="history-permission" type="button" data-tone="progress" aria-describedby="history-detail">Checking…</button>
+        </div>
       </section>
 
       <footer>
-        <span>Tab Groups bridge</span>
-        <span class="manifest">Manifest V3</span>
+        <a href="https://github.com/wilsonyiyi/alfred-chrome-tabs" target="_blank" rel="noreferrer">GitHub Repository</a>
       </footer>
     </main>
     <script type="module" src="popup.js"></script>

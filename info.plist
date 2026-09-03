@@ -38,11 +38,26 @@
 		</array>
 		<key>1028D1F9-AD5E-4B7E-984A-9F2978D8F101</key>
 		<array/>
+		<key>C6A5EC49-0E70-4005-B9FE-BE4BE3151A2D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>60D78AE9-CEB9-4339-A65D-9E5826AEDA94</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>60D78AE9-CEB9-4339-A65D-9E5826AEDA94</key>
+		<array/>
 	</dict>
 	<key>createdby</key>
 	<string>Wilsonyiyi</string>
 	<key>description</key>
-	<string>Search and manage Chrome tabs and tab groups from Alfred.</string>
+	<string>Search and manage Chrome tabs, tab groups, and history from Alfred.</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
@@ -193,9 +208,81 @@
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>c3</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Searching Chrome history…</string>
+				<key>script</key>
+				<string>./node_modules/.bin/run-node src/list-history.js "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Search recently visited Chrome pages</string>
+				<key>title</key>
+				<string>Search Chrome history</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>C6A5EC49-0E70-4005-B9FE-BE4BE3151A2D</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>./node_modules/.bin/run-node src/history-action.js "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>60D78AE9-CEB9-4339-A65D-9E5826AEDA94</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
-	<string>Use c1 for Chrome tabs and c2 for Chrome tab groups. In c2, use new to create a colored group and color to recolor an existing group.</string>
+	<string>Use c1 for Chrome tabs, c2 for Chrome tab groups, and c3 for Chrome history. Enable History Search from the Chrome extension popup before using c3.</string>
 	<key>uidata</key>
 	<dict>
 		<key>1B3C0780-4C03-47CF-8C08-A47D95EA26B6</key>
@@ -225,6 +312,20 @@
 			<real>520</real>
 			<key>ypos</key>
 			<real>335</real>
+		</dict>
+		<key>C6A5EC49-0E70-4005-B9FE-BE4BE3151A2D</key>
+		<dict>
+			<key>xpos</key>
+			<real>245</real>
+			<key>ypos</key>
+			<real>420</real>
+		</dict>
+		<key>60D78AE9-CEB9-4339-A65D-9E5826AEDA94</key>
+		<dict>
+			<key>xpos</key>
+			<real>520</real>
+			<key>ypos</key>
+			<real>420</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>

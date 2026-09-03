@@ -14,10 +14,13 @@ const SCRIPT_FILTER_UID = '1B3C0780-4C03-47CF-8C08-A47D95EA26B6';
 const FOCUS_ACTION_UID = '21862161-A26D-43B3-89E9-C55E61C68E4F';
 const GROUP_FILTER_UID = '5CF0B408-6BB4-4B0C-99A1-0B283EFF1CFB';
 const GROUP_ACTION_UID = '1028D1F9-AD5E-4B7E-984A-9F2978D8F101';
+const HISTORY_FILTER_UID = 'C6A5EC49-0E70-4005-B9FE-BE4BE3151A2D';
+const HISTORY_ACTION_UID = '60D78AE9-CEB9-4339-A65D-9E5826AEDA94';
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const extensionManifest = JSON.parse(fs.readFileSync('extension/manifest.json', 'utf8'));
 const serviceWorker = fs.readFileSync('extension/service-worker.js', 'utf8');
 const nativeBridge = fs.readFileSync('extension/native-bridge.js', 'utf8');
+const historyBridge = fs.readFileSync('extension/history.js', 'utf8');
 const popupHtml = fs.readFileSync('extension/popup.html', 'utf8');
 const nativeHostInstaller = fs.readFileSync('scripts/install-native-host.js', 'utf8');
 const workflow = plist.parse(fs.readFileSync('info.plist', 'utf8'));
@@ -28,8 +31,13 @@ const focusConnection = workflow.connections?.[SCRIPT_FILTER_UID]?.some(connecti
 ));
 const groupFilter = workflow.objects?.find(object => object.uid === GROUP_FILTER_UID);
 const groupAction = workflow.objects?.find(object => object.uid === GROUP_ACTION_UID);
+const historyFilter = workflow.objects?.find(object => object.uid === HISTORY_FILTER_UID);
+const historyAction = workflow.objects?.find(object => object.uid === HISTORY_ACTION_UID);
 const connectsToGroupAction = uid => workflow.connections?.[uid]?.some(connection => (
   connection.destinationuid === GROUP_ACTION_UID
+));
+const connectsToHistoryAction = workflow.connections?.[HISTORY_FILTER_UID]?.some(connection => (
+  connection.destinationuid === HISTORY_ACTION_UID
 ));
 
 if (
@@ -75,6 +83,16 @@ if (
 }
 
 if (
+  historyFilter?.config.keyword !== 'c3'
+  || historyFilter.config.alfredfiltersresults !== false
+  || historyFilter.config.script !== './node_modules/.bin/run-node src/list-history.js "$1"'
+  || historyAction?.config.script !== './node_modules/.bin/run-node src/history-action.js "$1"'
+  || !connectsToHistoryAction
+) {
+  throw new Error('The c3 Chrome History filter is missing or disconnected');
+}
+
+if (
   extensionManifest.manifest_version !== 3
   || extensionManifest.version !== packageJson.version
   || extensionManifest.background?.service_worker !== 'service-worker.js'
@@ -84,6 +102,7 @@ if (
   || !extensionManifest.permissions?.includes('nativeMessaging')
   || !extensionManifest.permissions?.includes('tabGroups')
   || !extensionManifest.permissions?.includes('tabs')
+  || !extensionManifest.optional_permissions?.includes('history')
 ) {
   throw new Error('The Chrome extension manifest is missing required Tab Groups bridge settings');
 }
@@ -92,6 +111,9 @@ if (
   !popupHtml.includes('role="status"')
   || !popupHtml.includes('aria-live="polite"')
   || !popupHtml.includes('id="version"')
+  || !popupHtml.includes('id="history-permission"')
+  || !popupHtml.includes('https://github.com/wilsonyiyi/alfred-chrome-tabs')
+  || popupHtml.includes('Manifest V3')
   || !popupHtml.includes('src="icons/icon-48.png"')
   || extensionManifest.icons?.['128'] !== 'icons/icon-128.png'
   || extensionManifest.action?.default_icon?.['32'] !== 'icons/icon-32.png'
@@ -101,6 +123,9 @@ if (
 
 if (
   !serviceWorker.includes(`const NATIVE_HOST_NAME = '${NATIVE_HOST_NAME}'`)
+  || !serviceWorker.includes('createHistoryHandlers(chrome)')
+  || !historyBridge.includes('chromeApi.history.search')
+  || !historyBridge.includes('HISTORY_PERMISSION_REQUIRED')
   || !nativeBridge.includes('chromeApi.alarms.onAlarm.addListener(handleAlarm)')
   || !nativeBridge.includes('port.onDisconnect.addListener')
   || !nativeHostInstaller.includes('allowed_origins: [EXTENSION_ORIGIN]')

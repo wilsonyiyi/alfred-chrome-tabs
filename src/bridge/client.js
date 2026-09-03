@@ -47,7 +47,7 @@ export function requestBridge(method, params = {}, {
     socket.once('error', finish(error => {
       if (error.code === 'ENOENT' || error.code === 'ECONNREFUSED') {
         reject(new Error(
-          'Chrome Tab Groups bridge is unavailable. Load the extension and run npm run bridge:install.',
+          'Chrome Tabs bridge is unavailable. Load the extension and run npm run bridge:install.',
           {cause: error},
         ));
         return;

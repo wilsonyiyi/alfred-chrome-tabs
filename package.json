@@ -1,7 +1,7 @@
 {
   "name": "alfred-chrome-tabs",
   "version": "0.1.0",
-  "description": "Search and manage Chrome tabs and tab groups from Alfred.",
+  "description": "Search and manage Chrome tabs, tab groups, and history from Alfred.",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -38,7 +38,7 @@
     "alfy": "^3.1.0"
   },
   "devDependencies": {
-    "alfred-workflow-switch": "^0.1.0",
+    "alfred-workflow-switch": "^0.2.0",
     "archiver": "^8.0.0",
     "plist": "^3.1.1"
   },

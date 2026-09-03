@@ -13,6 +13,8 @@ The installer copies the Native Host runtime into your Application Support direc
 
 The open Native Messaging port keeps the extension service worker active. If the Native Host exits, the extension retries immediately and a 30-second Chrome Alarm watchdog keeps retrying even if the service worker has gone dormant.
 
+History Search is optional. Open the extension popup and select **Enable** before using `c3`; Chrome will ask for access to browsing history at that moment rather than during installation.
+
 ## Development checkout
 
 Run `npm run bridge:install` from the project root, then load the local `extension` directory from `chrome://extensions`.

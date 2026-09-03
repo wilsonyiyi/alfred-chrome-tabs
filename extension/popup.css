@@ -2,42 +2,60 @@
   color-scheme: light dark;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --background: #ffffff;
-  --surface: #f8fafc;
-  --border: #e2e8f0;
-  --text: #172033;
-  --muted: #64748b;
+  --surface: #fafafa;
+  --border: #e4e4e7;
+  --text: #18181b;
+  --muted: #71717a;
   --button: #2563eb;
   --button-hover: #1d4ed8;
 }
 
 * { box-sizing: border-box; }
-body { width: 360px; margin: 0; background: var(--background); color: var(--text); }
-.popup-shell { padding: 20px; }
-.brand-row, .brand, .status-heading, footer { display: flex; align-items: center; }
-.brand-row { justify-content: space-between; gap: 16px; }
-.brand { gap: 12px; min-width: 0; }
-.brand-mark { width: 40px; height: 40px; flex: 0 0 auto; }
-h1, .brand p, .status-card p { margin: 0; }
-h1 { font-size: 19px; line-height: 24px; letter-spacing: -0.01em; }
-.brand p, .version, .status-card p, footer { color: var(--muted); }
-.brand p { margin-top: 1px; font-size: 12px; line-height: 16px; }
-.version { font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.status-card { margin-top: 20px; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
-.status-heading { gap: 10px; font-size: 16px; line-height: 22px; }
-.status-dot { width: 10px; height: 10px; border-radius: 50%; background: #3b82f6; box-shadow: 0 0 0 4px rgb(59 130 246 / 12%); }
-.status-card[data-tone="success"] .status-dot { background: #16a34a; box-shadow: 0 0 0 4px rgb(22 163 74 / 12%); }
-.status-card[data-tone="warning"] .status-dot { background: #f59e0b; box-shadow: 0 0 0 4px rgb(245 158 11 / 14%); }
-.status-card[data-tone="danger"] .status-dot { background: #dc2626; box-shadow: 0 0 0 4px rgb(220 38 38 / 12%); }
-.status-card p { margin-top: 8px; font-size: 13px; line-height: 19px; overflow-wrap: anywhere; }
-button { min-height: 36px; margin-top: 14px; padding: 7px 13px; border: 0; border-radius: 9px; background: var(--button); color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background-color 160ms ease, opacity 160ms ease; }
-button:hover { background: var(--button-hover); }
-button:focus-visible { outline: 3px solid rgb(37 99 235 / 28%); outline-offset: 2px; }
-button:disabled { cursor: progress; opacity: 0.6; }
-footer { justify-content: space-between; margin-top: 14px; padding: 0 2px; font-size: 11px; line-height: 16px; }
-.manifest { font-variant-numeric: tabular-nums; }
+body { width: 328px; margin: 0; background: var(--background); color: var(--text); }
+.popup-shell { padding: 16px; }
+.brand-row, .brand, .status-heading, .feature-row { display: flex; align-items: center; }
+.brand-row { justify-content: space-between; gap: 12px; }
+.brand { gap: 10px; min-width: 0; }
+.brand-mark { width: 36px; height: 36px; flex: 0 0 auto; }
+h1, .brand p, .bridge-status p { margin: 0; }
+h1 { font-size: 18px; line-height: 22px; letter-spacing: -0.01em; }
+.brand p, .version, .bridge-status p, .feature-copy span { color: var(--muted); }
+.brand p { font-size: 11px; line-height: 14px; }
+.version { font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.status-card { margin-top: 14px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface); overflow: hidden; }
+.bridge-status { padding: 13px 14px; }
+.status-heading { gap: 9px; font-size: 15px; line-height: 20px; }
+.status-dot { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: #3b82f6; box-shadow: 0 0 0 3px rgb(59 130 246 / 12%); }
+.status-card[data-tone="success"] .status-dot { background: #16a34a; box-shadow: 0 0 0 3px rgb(22 163 74 / 12%); }
+.status-card[data-tone="warning"] .status-dot { background: #f59e0b; box-shadow: 0 0 0 3px rgb(245 158 11 / 14%); }
+.status-card[data-tone="danger"] .status-dot { background: #dc2626; box-shadow: 0 0 0 3px rgb(220 38 38 / 12%); }
+.bridge-status p { margin-top: 6px; font-size: 11px; line-height: 16px; overflow-wrap: anywhere; }
+.divider { height: 1px; background: var(--border); }
+.feature-row { justify-content: space-between; gap: 12px; min-height: 58px; padding: 10px 12px 10px 14px; }
+.feature-copy { min-width: 0; }
+.feature-copy strong, .feature-copy span { display: block; }
+.feature-copy strong { font-size: 13px; line-height: 18px; }
+.feature-copy span { margin-top: 1px; font-size: 11px; line-height: 15px; white-space: nowrap; }
+button { border: 0; font: inherit; font-size: 11px; font-weight: 650; cursor: pointer; transition: background-color 140ms ease, color 140ms ease, opacity 140ms ease; }
+button:focus-visible, a:focus-visible { outline: 3px solid rgb(37 99 235 / 28%); outline-offset: 2px; }
+button:disabled { cursor: default; }
+.retry-button { min-height: 30px; margin-top: 9px; padding: 6px 10px; border-radius: 8px; background: var(--button); color: #fff; }
+.retry-button:hover { background: var(--button-hover); }
+.permission-button { min-width: 62px; min-height: 30px; flex: 0 0 auto; padding: 6px 10px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #1d4ed8; }
+.permission-button:hover:not(:disabled) { background: #dbeafe; }
+.permission-button[data-tone="success"] { border-color: #bbf7d0; background: #f0fdf4; color: #15803d; }
+.permission-button[data-tone="progress"] { color: var(--muted); opacity: 0.76; }
+.permission-button[data-tone="danger"] { border-color: #fecaca; background: #fef2f2; color: #b91c1c; }
+footer { margin-top: 12px; text-align: center; font-size: 12px; line-height: 18px; }
+footer a { color: var(--button); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
 
 @media (prefers-color-scheme: dark) {
-  :root { --background: #111827; --surface: #182234; --border: #2c3a50; --text: #f8fafc; --muted: #a8b3c4; --button: #3b82f6; --button-hover: #60a5fa; }
+  :root { --background: #111827; --surface: #182234; --border: #2c3a50; --text: #f8fafc; --muted: #a8b3c4; --button: #60a5fa; --button-hover: #93c5fd; }
+  .permission-button { border-color: #1e4f8a; background: #172b4d; color: #93c5fd; }
+  .permission-button:hover:not(:disabled) { background: #1e3a63; }
+  .permission-button[data-tone="success"] { border-color: #166534; background: #133523; color: #86efac; }
+  .permission-button[data-tone="danger"] { border-color: #7f1d1d; background: #3f1d24; color: #fca5a5; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -44,11 +44,15 @@ requireEntries(ALFRED_WORKFLOW_ASSET, [
   'index.js',
   'node_modules/alfy/index.js',
   'src/group-items.js',
+  'src/history-action.js',
+  'src/history-items.js',
+  'src/list-history.js',
 ]);
 requireEntries(CHROME_EXTENSION_ASSET, [
   'README.md',
   'extension/manifest.json',
   'extension/icons/icon-128.png',
+  'extension/history.js',
   'extension/native-bridge.js',
   'extension/popup.html',
   'install-native-host.command',

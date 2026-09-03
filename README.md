@@ -1,6 +1,6 @@
 # Chrome Tabs
 
-Search and manage Google Chrome tabs and tab groups from Alfred.
+Search and manage Google Chrome tabs, tab groups, and history from Alfred.
 
 **English** · [简体中文](README.zh-CN.md)
 
@@ -18,6 +18,10 @@ Type `c2` to list Chrome tab groups. Existing groups always appear before manage
 
 ![Manage Chrome tab groups with c2](docs/images/c2-groups.png)
 
+### Search Chrome history
+
+Open the Chrome extension popup and enable **History search** once, then type `c3` to browse recent pages or `c3 <query>` to search titles and URLs. Return focuses an already-open matching tab or opens a new one; Command-Return always opens a new Chrome tab.
+
 | Command | Action |
 | --- | --- |
 | `c1` | Search and focus open Chrome tabs |
@@ -26,6 +30,7 @@ Type `c2` to list Chrome tab groups. Existing groups always appear before manage
 | `c2 new <name>` | Create a grey group |
 | `c2 new <color> <name>` | Create a group with an explicit Chrome color |
 | `c2 color` | Choose an existing group and change its color |
+| `c3` | Browse and search Chrome history from the past year |
 
 Group result modifiers:
 
@@ -39,6 +44,7 @@ Group result modifiers:
 ### Check the Bridge
 
 The Chrome toolbar popup shows the extension version and live Native Messaging Bridge state.
+It also lets you grant the optional History Search permission and links to this repository.
 
 ![Chrome Tabs Bridge status](docs/images/bridge-popup.svg)
 
@@ -61,14 +67,14 @@ Keep the unpacked extension directory in place because Chrome loads it from that
 
 `c1` uses a fast JXA path: it reads every Chrome tab in a single batch and lets Alfred filter the in-memory results. It does not require the Chrome Extension Bridge.
 
-Tab Group management uses a separate bridge because Chrome's Apple Events interface does not expose the `chrome.tabGroups` API:
+Tab Group and History features use a separate bridge because Chrome's Apple Events interface does not expose the required APIs:
 
 ```text
-Alfred c2 command
+Alfred c2 / c3 command
   -> local Unix socket
   -> Chrome Native Messaging host
   -> bundled Manifest V3 extension
-  -> chrome.tabGroups / chrome.tabs APIs
+  -> chrome.tabGroups / chrome.history / chrome.tabs APIs
 ```
 
 The open Native Messaging port keeps the Manifest V3 service worker active during normal operation. If the host exits, the extension retries immediately and a Chrome Alarm watchdog continues recovery even after the service worker becomes dormant. Opening the popup also verifies that a connection exists; manual retry remains available for persistent installation errors.

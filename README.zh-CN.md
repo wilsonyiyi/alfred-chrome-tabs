@@ -1,6 +1,6 @@
 # Chrome Tabs
 
-在 Alfred 中快速搜索和管理 Google Chrome 标签页与标签组。
+在 Alfred 中快速搜索和管理 Google Chrome 标签页、标签组与浏览历史。
 
 [English](README.md) · **简体中文**
 
@@ -18,6 +18,10 @@
 
 ![使用 c2 管理 Chrome 标签组](docs/images/c2-groups.png)
 
+### 搜索 Chrome 浏览历史
+
+先打开 Chrome 扩展 popup，点击一次 **Enable** 开启 History Search 权限。之后输入 `c3` 浏览最近访问页面，或输入 `c3 <关键词>` 搜索标题和 URL。回车会优先聚焦已经打开的相同页面，否则新建标签页；Command-回车始终新建 Chrome 标签页。
+
 | 指令 | 功能 |
 | --- | --- |
 | `c1` | 搜索并聚焦已打开的 Chrome 标签页 |
@@ -26,6 +30,7 @@
 | `c2 new <名称>` | 创建灰色标签组 |
 | `c2 new <颜色> <名称>` | 使用指定颜色创建标签组 |
 | `c2 color` | 选择已有标签组并修改颜色 |
+| `c3` | 浏览和搜索最近一年的 Chrome 历史记录 |
 
 标签组结果支持以下组合键：
 
@@ -39,6 +44,7 @@
 ### 查看 Bridge 状态
 
 点击 Chrome 工具栏中的扩展图标，可以查看版本和 Native Messaging Bridge 的实时连接状态。
+Popup 还可以按需开启 History Search 权限，并提供仓库链接。
 
 ![Chrome Tabs Bridge 状态](docs/images/bridge-popup.svg)
 
@@ -61,14 +67,14 @@
 
 `c1` 使用轻量的 JXA 快速通道：一次性批量读取全部 Chrome 标签页，再交给 Alfred 在内存中完成过滤，因此不依赖 Chrome Extension Bridge。
 
-Chrome 的 Apple Events 接口没有开放 `chrome.tabGroups` API，因此 `c2` 通过独立 Bridge 管理标签组：
+Chrome 的 Apple Events 接口没有开放所需 API，因此 `c2` 和 `c3` 通过独立 Bridge 管理标签组与浏览历史：
 
 ```text
-Alfred c2 指令
+Alfred c2 / c3 指令
   -> 本地 Unix Socket
   -> Chrome Native Messaging Host
   -> Manifest V3 扩展
-  -> chrome.tabGroups / chrome.tabs API
+  -> chrome.tabGroups / chrome.history / chrome.tabs API
 ```
 
 正常连接时，Native Messaging Port 会保持 Manifest V3 Service Worker 活跃。如果 Host 退出，扩展会立即重连；若连续失败，Chrome Alarm 看门狗会在 Service Worker 休眠后继续唤醒并恢复连接。打开 popup 时也会主动检查连接。
